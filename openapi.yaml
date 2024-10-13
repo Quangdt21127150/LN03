@@ -1,0 +1,308 @@
+openapi: 3.0.0
+info:
+  title: Film API
+  version: 1.0.0
+  description: API for managing films in a movie database.
+servers:
+  - url: http://localhost:3000
+paths:
+  /films:
+    get:
+      summary: Retrieve all films
+      operationId: findAllFilms
+      responses:
+        '200':
+          description: A list of films
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Films retrieved successfully'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Film'
+
+    post:
+      summary: Create a new film
+      operationId: createFilm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilmDTO'
+      responses:
+        '201':
+          description: Film created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Film created successfully'
+                  data:
+                    $ref: '#/components/schemas/Film'
+
+  /films/{id}:
+    get:
+      summary: Retrieve a specific film by ID
+      operationId: findFilmById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the film to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Film retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Film with id 1 retrieved successfully'
+                  data:
+                    $ref: '#/components/schemas/Film'
+        '404':
+          description: Film not found
+
+    put:
+      summary: Update a film by ID
+      operationId: updateFilm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the film to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilmDTO'
+      responses:
+        '200':
+          description: Film updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Film updated successfully'
+                  data:
+                    $ref: '#/components/schemas/Film'
+
+    delete:
+      summary: Delete a film by ID
+      operationId: deleteFilm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the film to delete
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Film deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Film deleted successfully'
+        '404':
+          description: Film not found
+
+  /films/title/{title}:
+    get:
+      summary: Retrieve a film by title
+      operationId: getFilmByTitle
+      parameters:
+        - name: title
+          in: path
+          required: true
+          description: Title of the film to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Film retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Film retrieved successfully'
+                  data:
+                    $ref: '#/components/schemas/Film'
+
+  /films/ratings:
+    get:
+      summary: Retrieve film ratings
+      operationId: getFilmRatings
+      responses:
+        '200':
+          description: A list of film ratings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Ratings retrieved successfully'
+                  data:
+                    type: array
+                    items:
+                      type: string
+
+  /films/special_features:
+    get:
+      summary: Retrieve special features of films
+      operationId: getSpecialFeatures
+      responses:
+        '200':
+          description: A list of special features
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Special features retrieved successfully'
+                  data:
+                    type: array
+                    items:
+                      type: string
+
+  /films/release_years:
+    get:
+      summary: Retrieve unique release years
+      operationId: getReleaseYears
+      responses:
+        '200':
+          description: A list of unique release years
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Release years retrieved successfully'
+                  data:
+                    type: array
+                    items:
+                      type: integer
+
+  /films/actors/{actor_id}:
+    get:
+      summary: Retrieve films by actor ID
+      operationId: getFilmsByActor
+      parameters:
+        - name: actor_id
+          in: path
+          required: true
+          description: ID of the actor to retrieve films for
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Films retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Films retrieved successfully'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Film'
+        '404':
+          description: No films found for the specified actor
+
+components:
+  schemas:
+    Film:
+      type: object
+      properties:
+        film_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        release_year:
+          type: integer
+        language_id:
+          type: integer
+        original_language_id:
+          type: integer
+        rental_duration:
+          type: integer
+        rental_rate:
+          type: number
+          format: float
+        length:
+          type: integer
+        replacement_cost:
+          type: number
+          format: float
+        rating:
+          type: string
+        special_features:
+          type: string[]
+        last_update:
+          type: string
+          format: date-time
+
+    FilmDTO:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        release_year:
+          type: integer
+        language_id:
+          type: integer
+        original_language_id:
+          type: integer
+        rental_duration:
+          type: integer
+        rental_rate:
+          type: number
+          format: float
+        length:
+          type: integer
+        replacement_cost:
+          type: number
+          format: float
+        rating:
+          type: string
+        special_features:
+          type: string[]
